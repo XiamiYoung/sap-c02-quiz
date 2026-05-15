@@ -2,8 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const SRC = String.raw`D:\ObsidianVault\SAP-C02-categorized.md`;
-const OUT = String.raw`D:\workspace\ai_docs\sap-c02-quiz.json`;
+const SRC = path.join(__dirname, 'SAP-C02-categorized.md');
+const OUT = path.join(__dirname, 'sap-c02-data.js');
 
 let raw = fs.readFileSync(SRC, 'utf8');
 // Normalize: drop private-use-area glyphs (PDF extraction artifacts) and other invisible junk.
@@ -245,5 +245,6 @@ console.log('Summary:', JSON.stringify(summary, null, 2));
 console.log('\nSample question 1:');
 console.log(JSON.stringify(parsed[0], null, 2).slice(0, 2000));
 
-fs.writeFileSync(OUT, JSON.stringify({ summary, questions: parsed }, null, 0));
+const payload = 'window.QUIZ_DATA = ' + JSON.stringify({ summary, questions: parsed }) + ';';
+fs.writeFileSync(OUT, payload);
 console.log('\nWrote', OUT, (fs.statSync(OUT).size / 1024 / 1024).toFixed(2), 'MB');

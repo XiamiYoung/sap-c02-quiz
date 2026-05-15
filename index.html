@@ -1,0 +1,1543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAP-C02 · Practice Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist-font@1.3.0/dist/css/geist.css">
+<style>
+:root{
+  --bg:#FAF8F3;
+  --bg-2:#F1ECDF;
+  --bg-3:#E7E0CC;
+  --ink:#0F0E0C;
+  --ink-2:#1F1D1A;
+  --ink-soft:#525049;
+  --ink-mute:#8A867D;
+  --line:#1F1D1A18;
+  --line-strong:#1F1D1A30;
+  --accent:#D44318;
+  --accent-2:#A92F0F;
+  --accent-soft:#F5E6DE;
+  --good:#0E6A3A;
+  --good-soft:#E1EFE5;
+  --warn:#9A6A00;
+  --hi:#FFE9A8;
+  --shadow:0 1px 0 #1F1D1A0A, 0 0 0 1px #1F1D1A10, 0 12px 28px -16px #1F1D1A26;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{
+  font-family:"Geist","Inter","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-feature-settings:"ss01","cv11","kern";
+  font-size:15px;
+  line-height:1.55;
+  color:var(--ink);
+  background:var(--bg);
+  background-image:
+    radial-gradient(900px 600px at 12% -5%, #F8F1DD 0%, transparent 60%),
+    radial-gradient(700px 500px at 95% 0%, #F0E3CB 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 70%, var(--bg-2) 100%);
+  min-height:100vh;
+}
+::selection{background:var(--hi);color:var(--ink)}
+
+/* —————— Display utilities —————— */
+.mono{font-family:"JetBrains Mono","SF Mono",Consolas,monospace}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--ink-mute);
+  font-weight:500;
+}
+
+/* —————— Masthead —————— */
+header.masthead{
+  border-bottom:1px solid var(--line-strong);
+  padding:14px 30px 12px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:24px;
+  background:rgba(250,248,243,0.78);
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:saturate(180%) blur(10px);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  font-family:"Geist","Inter",sans-serif;
+  font-size:15px;letter-spacing:0.16em;text-transform:uppercase;
+  font-weight:700;
+  line-height:1;
+  color:var(--ink);
+}
+.brand .dot{
+  display:inline-block;width:8px;height:8px;
+  background:var(--accent);
+  border-radius:50%;
+  margin-right:2px;
+}
+.brand b{font-weight:500;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:4px}
+.brand small{display:none}
+
+.head-mid{
+  text-align:center;
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink-soft);
+  display:flex;justify-content:center;gap:10px;
+}
+.head-mid .pill{
+  background:var(--bg-2);
+  border:1px solid var(--line);
+  padding:5px 11px 4px;
+  border-radius:99px;
+  color:var(--ink-2);
+}
+.head-mid .pill b{font-weight:700}
+.head-right{display:flex;align-items:center;gap:10px}
+.score-pill{
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+  border:1px solid var(--ink);
+  padding:7px 13px 6px;
+  display:flex;gap:9px;align-items:baseline;
+  background:var(--ink);color:#FAF8F3;
+  border-radius:99px;
+}
+.score-pill b{font-weight:700;color:#FAF8F3}
+.score-pill .sep{opacity:0.5}
+
+.icon-btn{
+  background:transparent;border:1px solid var(--line-strong);
+  border-radius:8px;
+  width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--ink);
+  font-size:15px;line-height:1;
+  transition:background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+.icon-btn:hover{background:var(--bg-2);border-color:var(--ink)}
+.icon-btn:active{transform:scale(0.96)}
+
+/* —————— Layout —————— */
+main{
+  display:grid;
+  grid-template-columns:268px minmax(0,1fr) 304px;
+  gap:0;
+  min-height:calc(100vh - 60px);
+}
+@media (max-width:1180px){ main{grid-template-columns:240px 1fr} aside.discussion-rail{display:none} }
+@media (max-width:840px){ main{grid-template-columns:1fr} aside.toc{display:none} }
+
+aside.toc{
+  border-right:1px solid var(--line);
+  padding:24px 18px 60px 26px;
+  position:sticky;top:60px;
+  height:calc(100vh - 60px);
+  overflow-y:auto;
+}
+.toc-title{
+  display:flex;align-items:baseline;justify-content:space-between;
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px;letter-spacing:0.24em;text-transform:uppercase;
+  color:var(--ink-mute);
+  margin:0 0 14px;
+  padding-bottom:6px;
+}
+.toc-title b{color:var(--ink);font-weight:600}
+.search-box{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line-strong);
+  background:transparent;
+  font-family:"Geist","Inter",sans-serif;
+  font-size:13px;
+  color:var(--ink);
+  margin-bottom:14px;
+  outline:none;
+  border-radius:8px;
+  transition:border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.search-box::placeholder{color:var(--ink-mute)}
+.search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,67,24,0.14)}
+
+.cat-list{list-style:none;padding:0;margin:0}
+.cat-list li{margin:1px 0}
+.cat-btn{
+  width:100%;text-align:left;background:transparent;border:0;
+  font:inherit;color:var(--ink-2);
+  padding:9px 12px 9px 12px;
+  cursor:pointer;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:8px;
+  font-size:13.5px;
+  line-height:1.25;
+  border-radius:7px;
+  font-weight:500;
+  transition:background 0.14s ease, color 0.14s ease;
+}
+.cat-btn:hover{background:var(--bg-2);color:var(--ink)}
+.cat-btn.active{
+  background:var(--ink);color:var(--bg);
+  font-weight:600;
+}
+.cat-btn .cnt{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;
+  color:var(--ink-mute);
+  font-weight:500;
+}
+.cat-btn.active .cnt{color:rgba(250,248,243,0.65)}
+
+.toc-foot{
+  margin-top:22px;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:0.06em;
+  color:var(--ink-soft);
+  line-height:1.7;
+}
+.toc-foot a{
+  color:var(--ink);text-decoration:none;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px dashed var(--line);
+  cursor:pointer;
+}
+.toc-foot a:last-child{border-bottom:0}
+.toc-foot a:hover{color:var(--accent-2)}
+.toc-foot a .arrow{opacity:0.4}
+.toc-foot a:hover .arrow{opacity:1;transform:translateX(2px)}
+
+/* —————— Center column —————— */
+section.column{
+  padding:42px 56px 96px;
+  max-width:760px;
+  margin:0 auto;
+  width:100%;
+}
+.column-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  padding-bottom:14px;
+  margin-bottom:34px;
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;gap:12px;
+}
+.section-title{
+  font-family:"Geist","Inter",sans-serif;
+  font-weight:700;
+  font-size:32px;
+  letter-spacing:-0.025em;
+  line-height:1.05;
+  margin:0;
+  color:var(--ink);
+}
+.section-title em{font-style:normal;color:var(--accent);font-weight:700}
+.section-meta{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--ink-soft);
+  text-align:right;line-height:1.6;
+}
+
+/* Q card */
+.qcard{margin-bottom:32px}
+.qhead{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:8px;
+  margin-bottom:18px;
+  border-bottom:1px solid var(--line);
+}
+.qhead .lhs{display:flex;gap:14px;align-items:baseline}
+.qnum{
+  font-family:"JetBrains Mono",monospace;
+  font-weight:600;
+  font-size:22px;
+  line-height:1;
+  color:var(--accent);
+  letter-spacing:-0.01em;
+  background:var(--accent-soft);
+  padding:7px 11px 6px;
+  border-radius:8px;
+}
+.qmeta{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ink-mute);
+  line-height:1.4;
+}
+.qhead .rhs{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ink-soft);
+  display:flex;align-items:center;gap:8px;
+}
+.qhead .status-dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--ink-mute);
+}
+.qhead .status-dot.good{background:var(--good)}
+.qhead .status-dot.bad{background:var(--accent)}
+
+.qtext{
+  font-family:"Geist","Inter",sans-serif;
+  font-size:16.5px;
+  line-height:1.6;
+  color:var(--ink-2);
+  word-wrap:break-word;
+  margin:6px 0 24px;
+  font-weight:420;
+  letter-spacing:-0.003em;
+}
+.qtext p{margin:0 0 10px}
+.qtext p:last-child{margin-bottom:0}
+
+.choices{list-style:none;padding:0;margin:0 0 24px;display:flex;flex-direction:column;gap:8px}
+.choice{
+  display:grid;
+  grid-template-columns:36px 1fr auto;
+  align-items:start;
+  gap:14px;
+  padding:14px 16px;
+  cursor:pointer;
+  position:relative;
+  font-size:14.5px;
+  background:#FFFFFF55;
+  border:1px solid var(--line);
+  border-radius:10px;
+  transition:background 0.16s ease, border-color 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease;
+}
+.choice:hover:not(.locked){
+  background:#FFFFFF;
+  border-color:var(--line-strong);
+  transform:translateY(-1px);
+  box-shadow:var(--shadow);
+}
+.choice.selected:not(.locked){
+  background:var(--accent-soft);
+  border-color:var(--accent);
+}
+.choice .key{
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;
+  border:1.5px solid var(--ink-soft);
+  border-radius:8px;
+  font-family:"JetBrains Mono",monospace;
+  font-weight:600;
+  font-size:12px;
+  background:#FFFFFFBB;
+  color:var(--ink);
+  transition:background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+.choice.multi .key{border-radius:6px}
+.choice.selected:not(.locked) .key{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#FFF;
+}
+.choice .body{
+  color:var(--ink-2);
+  line-height:1.5;
+  font-size:14.5px;
+}
+.choice .pct{
+  font-family:"JetBrains Mono",monospace;
+  font-size:12.5px;
+  color:var(--ink-mute);
+  letter-spacing:0.04em;
+  align-self:start;
+  margin-top:5px;
+  font-weight:600;
+  opacity:0;transform:translateX(6px);
+  transition:opacity 0.4s ease, transform 0.4s ease;
+}
+.locked .pct{opacity:1;transform:none}
+
+.locked .choice{cursor:default}
+.locked .choice:hover{transform:none;box-shadow:none}
+.choice.community{
+  background:var(--good-soft);
+  border-color:var(--good);
+}
+.choice.community .key{background:var(--good);border-color:var(--good);color:#FFF}
+.choice.user-wrong{
+  background:#FBE8E1;
+  border-color:var(--accent);
+}
+.choice.user-wrong .key{background:var(--accent);border-color:var(--accent);color:#FFF}
+.choice .badge{
+  display:inline-block;
+  font-family:"JetBrains Mono",monospace;
+  font-size:9px;letter-spacing:0.18em;
+  text-transform:uppercase;
+  padding:2px 7px;
+  margin-left:8px;
+  vertical-align:1px;
+  font-weight:700;
+  border-radius:99px;
+}
+.badge-community{background:var(--good);color:#FFF}
+.badge-yours{background:var(--ink);color:#FFF}
+.badge-wrong{background:var(--accent);color:#FFF}
+
+.vote-bar{
+  height:5px;border-radius:99px;
+  background:rgba(0,0,0,0.06);
+  margin-top:8px;
+  overflow:hidden;
+}
+.vote-bar .fill{
+  height:100%;width:0;border-radius:99px;
+  background:var(--ink-soft);
+  transition:width 0.7s cubic-bezier(0.2,0.8,0.2,1);
+}
+.community .vote-bar .fill{background:var(--good)}
+.user-wrong .vote-bar .fill{background:var(--accent)}
+
+/* Actions */
+.actions{
+  display:flex;align-items:center;gap:10px;
+  margin:24px 0 18px;
+  flex-wrap:wrap;
+}
+.btn{
+  font-family:"Geist","Inter",sans-serif;
+  font-size:13px;letter-spacing:0.01em;
+  background:var(--ink);
+  color:#FAF8F3;
+  border:1px solid var(--ink);
+  padding:11px 18px;
+  cursor:pointer;
+  font-weight:600;
+  border-radius:8px;
+  transition:transform 0.12s ease, background 0.16s ease;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn:hover:not(:disabled){background:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:translateY(0)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-ghost{
+  background:transparent;color:var(--ink);
+  border-color:var(--line-strong);
+}
+.btn-ghost:hover:not(:disabled){background:var(--bg-2);border-color:var(--ink);color:var(--ink);transform:translateY(-1px)}
+.btn-link{
+  background:transparent;border:0;color:var(--ink-soft);padding:11px 8px;
+  font-weight:500;
+  text-decoration:none;
+}
+.btn-link:hover{color:var(--accent-2);background:transparent}
+.spacer{flex:1}
+
+/* Verdict */
+.verdict{
+  display:none;
+  align-items:center;gap:18px;
+  padding:18px 22px;
+  margin:18px 0 26px;
+  border:1px solid var(--ink);
+  background:var(--bg);
+  border-radius:12px;
+  position:relative;
+  box-shadow:var(--shadow);
+}
+.locked .verdict{display:flex}
+.verdict.correct{border-color:var(--good);background:var(--good-soft)}
+.verdict.wrong{border-color:var(--accent);background:var(--accent-soft)}
+.verdict .sigil{
+  display:flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:50%;
+  flex-shrink:0;
+  font-size:22px;line-height:1;font-weight:700;
+}
+.verdict.correct .sigil{background:var(--good);color:#FFF}
+.verdict.wrong .sigil{background:var(--accent);color:#FFF}
+.verdict h3{
+  font-family:"Geist","Inter",sans-serif;
+  font-weight:700;
+  font-size:19px;
+  margin:0 0 2px;
+  letter-spacing:-0.015em;
+  color:var(--ink);
+}
+.verdict h3 em{font-style:normal;font-weight:700}
+.verdict.correct h3 em{color:var(--good)}
+.verdict.wrong h3 em{color:var(--accent-2)}
+.verdict p{
+  margin:0;
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;letter-spacing:0.08em;
+  color:var(--ink-soft);
+  line-height:1.6;
+}
+.verdict p b{color:var(--ink);font-weight:700}
+
+/* Discussion */
+.discussion-anchor{
+  display:flex;align-items:baseline;gap:14px;
+  margin:30px 0 14px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+}
+.discussion-anchor .label{
+  font-family:"Geist","Inter",sans-serif;
+  font-weight:700;
+  font-size:17px;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+}
+.discussion-anchor .ct{
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ink-mute);
+}
+.comments{display:none;list-style:none;padding:0;margin:0}
+.locked .comments{display:block}
+.cmt{
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+  line-height:1.55;
+  color:var(--ink-2);
+  position:relative;
+}
+.cmt.depth-1{padding-left:22px;border-left:2px solid var(--bg-3);margin-left:14px;border-bottom-color:var(--line)}
+.cmt.depth-2{padding-left:22px;border-left:2px solid var(--bg-3);margin-left:38px}
+.cmt.depth-3{padding-left:22px;border-left:2px solid var(--bg-3);margin-left:62px}
+.cmt .head{
+  display:flex;gap:10px;align-items:baseline;
+  margin-bottom:4px;flex-wrap:wrap;
+  font-size:13px;
+  color:var(--ink-mute);
+}
+.cmt .user{
+  font-weight:700;color:var(--ink);
+  font-size:13.5px;
+}
+.cmt .badge{
+  font-family:"JetBrains Mono",monospace;
+  font-size:9px;letter-spacing:0.16em;text-transform:uppercase;
+  padding:2px 7px;border-radius:99px;
+  background:var(--bg-3);color:var(--ink-2);
+  font-weight:700;
+}
+.cmt .when{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;letter-spacing:0.05em;
+}
+.cmt .sel{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;
+}
+.cmt .sel.match{color:var(--good)}
+.cmt .sel.diff{color:var(--accent-2)}
+.cmt .text{
+  white-space:pre-wrap;word-wrap:break-word;
+  font-size:14px;line-height:1.6;
+  color:var(--ink-2);
+}
+.cmt .text a{color:var(--accent-2);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+.cmt .text a:hover{background:var(--hi)}
+.cmt .up{
+  position:absolute;right:0;top:14px;
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;color:var(--ink-mute);
+  background:var(--bg-2);
+  padding:3px 8px;border-radius:99px;
+}
+.cmt .up b{font-weight:700;color:var(--ink-2)}
+
+/* Pager */
+.pager{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:24px;padding-top:18px;
+  border-top:1px solid var(--line);
+}
+.pager a{
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;
+  padding:8px 14px;
+  border-radius:7px;
+  background:var(--bg-2);
+  cursor:pointer;
+  font-weight:600;
+  transition:background 0.14s ease, color 0.14s ease;
+}
+.pager a:hover{background:var(--ink);color:#FAF8F3}
+.pager a.disabled{opacity:0.3;pointer-events:none}
+.pager .ctr{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;color:var(--ink-mute);letter-spacing:0.12em;text-transform:uppercase;
+}
+.pager .ctr b{color:var(--ink);font-weight:700}
+
+/* —————— Right rail —————— */
+aside.discussion-rail{
+  border-left:1px solid var(--line);
+  padding:24px 22px;
+  position:sticky;top:60px;
+  height:calc(100vh - 60px);
+  overflow-y:auto;
+}
+.rail-section{margin-bottom:28px}
+.rail-h{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--ink-mute);
+  padding-bottom:8px;margin-bottom:12px;
+  border-bottom:1px solid var(--line);
+}
+.stat-row{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin-bottom:5px;
+  font-size:12.5px;
+}
+.stat-row .lbl{color:var(--ink-soft)}
+.stat-row .val{font-weight:700;color:var(--ink);font-family:"JetBrains Mono",monospace;font-size:13px}
+.stat-row .val.good{color:var(--good)}
+.stat-row .val.bad{color:var(--accent-2)}
+.big-stat{
+  font-family:"Geist","Inter",sans-serif;
+  font-weight:700;
+  font-size:54px;
+  line-height:0.95;
+  letter-spacing:-0.04em;
+  color:var(--ink);
+  margin:6px 0 6px;
+  font-feature-settings:"tnum";
+}
+.big-stat sup{
+  font-family:"JetBrains Mono",monospace;
+  font-size:16px;
+  vertical-align:super;
+  color:var(--ink-mute);
+  margin-left:6px;
+  font-weight:600;
+  letter-spacing:0.04em;
+}
+.big-stat.empty{color:var(--ink-mute)}
+.streak{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:8px}
+.streak .dot{
+  width:13px;height:13px;
+  border-radius:4px;
+  background:var(--bg-3);
+  border:1px solid var(--line-strong);
+}
+.streak .dot.good{background:var(--good);border-color:var(--good)}
+.streak .dot.bad{background:var(--accent);border-color:var(--accent)}
+
+/* Question map */
+.rail-cat-name{
+  font-size:13px;font-weight:600;color:var(--ink);
+  margin:2px 0 12px;line-height:1.3;
+  letter-spacing:-0.005em;
+}
+.qmap{
+  display:grid;
+  grid-template-columns:repeat(10, 1fr);
+  gap:4px;
+  margin-bottom:14px;
+}
+.qmap .cell{
+  aspect-ratio:1/1;
+  border:1px solid var(--line-strong);
+  background:var(--bg);
+  border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"JetBrains Mono",monospace;
+  font-size:9.5px;
+  font-weight:600;
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:transform 0.1s ease, background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+  user-select:none;
+  position:relative;
+}
+.qmap .cell:hover{transform:scale(1.18);z-index:2;box-shadow:0 4px 10px -2px rgba(15,14,12,0.25);border-color:var(--ink)}
+.qmap .cell.good{background:var(--good);border-color:var(--good);color:#FFF}
+.qmap .cell.bad{background:var(--accent);border-color:var(--accent);color:#FFF}
+.qmap .cell.now{
+  outline:2px solid var(--ink);
+  outline-offset:1px;
+  z-index:1;
+  font-weight:700;
+  color:var(--ink);
+  background:#FFFFFF;
+  border-color:var(--ink);
+}
+.qmap .cell.now.good,.qmap .cell.now.bad{color:#FFF;background:revert}
+.qmap .cell.now.good{background:var(--good)}
+.qmap .cell.now.bad{background:var(--accent)}
+.qmap-legend{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:5px 10px;
+  font-size:11px;color:var(--ink-soft);
+  margin-bottom:14px;
+  align-items:center;
+}
+.qmap-legend span{display:flex;align-items:center;gap:7px}
+.qmap-legend .lg{
+  display:inline-block;width:11px;height:11px;border-radius:3px;
+  border:1px solid var(--line-strong);background:var(--bg);
+}
+.qmap-legend .lg-good{background:var(--good);border-color:var(--good)}
+.qmap-legend .lg-bad{background:var(--accent);border-color:var(--accent)}
+.qmap-legend .lg-now{background:#FFF;border:2px solid var(--ink);width:9px;height:9px}
+.qmap-summary{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+.qmap-stat{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+}
+.qmap-stat b{
+  font-family:"JetBrains Mono",monospace;
+  font-size:18px;font-weight:700;color:var(--ink);
+  line-height:1;
+}
+.qmap-stat:nth-child(1) b{color:var(--good)}
+.qmap-stat:nth-child(2) b{color:var(--accent-2)}
+.qmap-stat span{
+  font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-mute);
+  margin-top:4px;font-weight:500;
+}
+
+.list-mini{
+  list-style:none;padding:0;margin:0;
+  font-size:12px;
+}
+.list-mini li{
+  padding:8px 10px;cursor:pointer;
+  border-radius:7px;
+  display:grid;grid-template-columns:16px 42px 1fr;align-items:center;gap:8px;
+  transition:background 0.14s ease;
+  color:var(--ink-2);
+}
+.list-mini li:hover{background:var(--bg-2)}
+.list-mini li .qn{font-family:"JetBrains Mono",monospace;color:var(--ink-mute);font-weight:600;font-size:11px}
+.list-mini li .mk{font-family:"JetBrains Mono",monospace;font-weight:700;text-align:center}
+.list-mini li.good .mk{color:var(--good)}
+.list-mini li.bad .mk{color:var(--accent-2)}
+.list-mini .qtxt{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* Onboarding hero */
+.hero{
+  border:1px solid var(--line-strong);
+  padding:30px 32px 26px;
+  margin-bottom:32px;
+  background:linear-gradient(135deg, #FFFFFF, var(--bg-2));
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:auto -40px -60px auto;
+  width:240px;height:240px;
+  background:radial-gradient(circle at 50% 50%, var(--accent-soft) 0%, transparent 65%);
+  pointer-events:none;
+}
+.hero h2{
+  font-family:"Geist","Inter",sans-serif;
+  font-weight:700;
+  font-size:26px;
+  letter-spacing:-0.025em;
+  line-height:1.15;
+  margin:0 0 10px;
+  color:var(--ink);
+}
+.hero h2 em{font-style:normal;color:var(--accent);font-weight:700}
+.hero p{margin:0 0 14px;color:var(--ink-2);font-size:14.5px;line-height:1.55;max-width:560px}
+.hero ul{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px;max-width:580px}
+.hero li{
+  font-size:13px;color:var(--ink-2);
+  padding-left:22px;position:relative;line-height:1.5;
+}
+.hero li::before{
+  content:"";position:absolute;left:0;top:9px;
+  width:10px;height:1px;background:var(--accent);
+}
+.hero li b{font-weight:700;color:var(--ink)}
+
+/* Loading */
+.loading{
+  text-align:center;padding:120px 0;
+  font-family:"JetBrains Mono",monospace;
+  font-size:12px;letter-spacing:0.24em;text-transform:uppercase;
+  color:var(--ink-mute);
+}
+
+/* —————— Dialog —————— */
+.dialog-overlay{
+  position:fixed;inset:0;
+  background:rgba(15,14,12,0.45);
+  display:none;
+  align-items:center;justify-content:center;
+  z-index:100;
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  animation:fadeIn 0.18s ease;
+}
+.dialog-overlay.open{display:flex}
+.dialog{
+  background:var(--bg);
+  border:1px solid var(--line-strong);
+  border-radius:14px;
+  padding:26px 28px 22px;
+  max-width:440px;width:calc(100% - 36px);
+  box-shadow:0 24px 60px -12px rgba(15,14,12,0.4), 0 0 0 1px rgba(15,14,12,0.08);
+  position:relative;
+  animation:popIn 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+}
+.dialog .eyebrow{margin-bottom:6px}
+.dialog h3{
+  font-family:"Geist","Inter",sans-serif;
+  font-weight:700;font-size:20px;
+  margin:0 0 10px;
+  letter-spacing:-0.02em;
+  color:var(--ink);
+}
+.dialog h3 em{font-style:normal;color:var(--accent);font-weight:700}
+.dialog p{
+  margin:0 0 18px;
+  font-size:14.5px;line-height:1.55;
+  color:var(--ink-2);
+}
+.dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{transform:scale(0.96) translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+/* small responsive tweaks */
+@media (max-width:680px){
+  section.column{padding:30px 22px 60px}
+  .section-title{font-size:26px}
+  .qnum{font-size:18px;padding:5px 9px}
+  .qtext{font-size:15.5px}
+  .choice{grid-template-columns:30px 1fr;padding:12px 12px}
+  .choice .pct{grid-column:1/-1;justify-self:end}
+  header.masthead{grid-template-columns:1fr auto;gap:8px;padding:12px 16px}
+  .head-mid{display:none}
+  .brand{font-size:22px}
+  .brand b{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="brand">
+    <span class="dot"></span>SAP-C02<b>Practice Bank</b>
+  </div>
+  <div class="head-mid">
+    <span class="pill" id="hd-cat">—</span>
+    <span class="pill" id="hd-q">—</span>
+  </div>
+  <div class="head-right">
+    <div class="score-pill">
+      <span>SCORE</span>
+      <b id="hd-score-num">0</b>
+      <span class="sep">/</span>
+      <b id="hd-score-tot">0</b>
+      <span class="sep">·</span>
+      <b id="hd-score-pct">—</b>
+    </div>
+    <button class="icon-btn" id="btn-reset" title="Reset progress for this device">⟲</button>
+  </div>
+</header>
+
+<main>
+
+<aside class="toc">
+  <div class="toc-title">Sections <b id="toc-count">13</b></div>
+  <input class="search-box" id="search" placeholder="Search questions, e.g. CloudFront…">
+  <ul class="cat-list" id="cat-list"></ul>
+  <div class="toc-foot">
+    <a id="link-random"><span>Random question</span><span class="arrow">→</span></a>
+    <a id="link-incorrect"><span>Review wrong only</span><span class="arrow">→</span></a>
+    <div style="margin-top:14px;color:var(--ink-mute);font-size:10px;letter-spacing:0.16em;text-transform:uppercase">Source · Examtopics · community-graded</div>
+  </div>
+</aside>
+
+<section class="column">
+  <div id="content">
+    <div class="loading">Loading question bank…</div>
+  </div>
+</section>
+
+<aside class="discussion-rail">
+  <div class="rail-section">
+    <p class="rail-h">Session score</p>
+    <div class="big-stat empty" id="rail-pct">—<sup>%</sup></div>
+    <div class="stat-row"><span class="lbl">Answered</span><span class="val" id="rail-ans">0</span></div>
+    <div class="stat-row"><span class="lbl">Correct</span><span class="val good" id="rail-cor">0</span></div>
+    <div class="stat-row"><span class="lbl">Incorrect</span><span class="val bad" id="rail-wrg">0</span></div>
+    <div class="stat-row"><span class="lbl">Streak</span><span class="val" id="rail-streak">—</span></div>
+    <div class="streak" id="streak-dots"></div>
+  </div>
+  <div class="rail-section">
+    <div class="rail-h" style="display:flex;justify-content:space-between;align-items:baseline">
+      <span>Section progress</span>
+      <span id="cat-meta" style="color:var(--ink-2);font-weight:700;letter-spacing:0.06em">0 / 0</span>
+    </div>
+    <div class="rail-cat-name" id="rail-cat-name"></div>
+    <div class="qmap" id="qmap"></div>
+    <div class="qmap-legend">
+      <span><span class="lg lg-todo"></span>未答</span>
+      <span><span class="lg lg-good"></span>正确</span>
+      <span><span class="lg lg-bad"></span>错误</span>
+      <span><span class="lg lg-now"></span>当前</span>
+    </div>
+    <div class="qmap-summary">
+      <div class="qmap-stat"><b id="cat-cor">0</b><span>Correct</span></div>
+      <div class="qmap-stat"><b id="cat-wrg">0</b><span>Wrong</span></div>
+      <div class="qmap-stat"><b id="cat-todo">0</b><span>To go</span></div>
+    </div>
+  </div>
+</aside>
+
+</main>
+
+<!-- Dialog -->
+<div class="dialog-overlay" id="dlg">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+    <div class="eyebrow" id="dlg-eyebrow">Confirm</div>
+    <h3 id="dlg-title">Are you sure?</h3>
+    <p id="dlg-body">This action cannot be undone.</p>
+    <div class="row">
+      <button class="btn btn-ghost" id="dlg-cancel">Cancel</button>
+      <button class="btn" id="dlg-ok">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="sap-c02-data.js"></script>
+<script>
+"use strict";
+
+const $  = (s,r=document) => r.querySelector(s);
+const $$ = (s,r=document) => Array.from(r.querySelectorAll(s));
+
+const STATE_KEY = "sap-c02-state-v1";
+let DATA = null;
+let state = { answered: {}, recent: [], currentCategory: null, currentIndex: 0 };
+
+function loadState(){ try{ const s=localStorage.getItem(STATE_KEY); if(s) Object.assign(state, JSON.parse(s)); }catch(e){} }
+function saveState(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){} }
+function questionsInCategory(cat){ return DATA.questions.filter(q => q.category === cat); }
+
+// ————— Dialog system —————
+const dlg = {
+  el:null, ok:null, cancel:null, title:null, body:null, eyebrow:null, _resolve:null,
+  init(){
+    this.el = $("#dlg"); this.ok = $("#dlg-ok"); this.cancel = $("#dlg-cancel");
+    this.title = $("#dlg-title"); this.body = $("#dlg-body"); this.eyebrow = $("#dlg-eyebrow");
+    this.ok.addEventListener("click", () => this._close(true));
+    this.cancel.addEventListener("click", () => this._close(false));
+    this.el.addEventListener("click", e => { if (e.target === this.el) this._close(false); });
+    document.addEventListener("keydown", e => {
+      if (!this.el.classList.contains("open")) return;
+      if (e.key === "Escape") this._close(false);
+      if (e.key === "Enter") this._close(true);
+    });
+  },
+  open({eyebrow="Confirm", title="Are you sure?", body="", okLabel="Confirm", cancelLabel="Cancel", danger=false}){
+    this.eyebrow.textContent = eyebrow;
+    this.title.innerHTML = title;
+    this.body.innerHTML = body;
+    this.ok.textContent = okLabel;
+    this.cancel.textContent = cancelLabel;
+    this.cancel.style.display = cancelLabel ? "" : "none";
+    this.ok.style.background = danger ? "var(--accent)" : "";
+    this.ok.style.borderColor = danger ? "var(--accent)" : "";
+    this.el.classList.add("open");
+    setTimeout(() => this.ok.focus(), 60);
+    return new Promise(res => { this._resolve = res; });
+  },
+  _close(v){
+    this.el.classList.remove("open");
+    if (this._resolve) { this._resolve(v); this._resolve = null; }
+  },
+  notify(opts){
+    return this.open(Object.assign({okLabel:"OK", cancelLabel:""}, opts));
+  }
+};
+
+// ————— Init —————
+function init(){
+  DATA = window.QUIZ_DATA;
+  loadState();
+  dlg.init();
+  if (!state.currentCategory) {
+    state.currentCategory = DATA.summary.categories[0].name;
+    state.currentIndex = 0;
+  }
+  $("#toc-count").textContent = DATA.summary.categories.length;
+  renderCategoryList();
+  render();
+
+  $("#btn-reset").addEventListener("click", async () => {
+    const ok = await dlg.open({
+      eyebrow:"Reset progress",
+      title:"Reset <em>this device's</em> progress?",
+      body:"All your answers, score, and recent history will be cleared. The question bank itself stays intact.",
+      okLabel:"Reset everything", cancelLabel:"Keep it",
+      danger:true,
+    });
+    if (!ok) return;
+    state = { answered:{}, recent:[], currentCategory: DATA.summary.categories[0].name, currentIndex: 0 };
+    saveState(); renderCategoryList(); render();
+  });
+  $("#link-random").addEventListener("click", e => {
+    e.preventDefault();
+    const all = DATA.questions;
+    jumpTo(all[Math.floor(Math.random()*all.length)]);
+  });
+  $("#link-incorrect").addEventListener("click", async e => {
+    e.preventDefault();
+    const wrong = DATA.questions.filter(q => state.answered[q.qnum] && !state.answered[q.qnum].correct);
+    if (wrong.length === 0) {
+      await dlg.notify({
+        eyebrow:"Nothing to review",
+        title:"No incorrect answers <em>yet</em>.",
+        body:"Come back here after you've answered a few questions and gotten some wrong. Then this jumps you to a random missed one.",
+      });
+      return;
+    }
+    jumpTo(wrong[Math.floor(Math.random()*wrong.length)]);
+  });
+  $("#search").addEventListener("input", e => {
+    const term = e.target.value.trim().toLowerCase();
+    if (!term) { renderCategoryList(); return; }
+    renderSearch(term);
+  });
+}
+
+function jumpTo(q){
+  state.currentCategory = q.category;
+  const list = questionsInCategory(q.category);
+  state.currentIndex = list.findIndex(x => x.qnum === q.qnum);
+  saveState(); renderCategoryList(); render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderCategoryList(){
+  const ul = $("#cat-list"); ul.innerHTML = "";
+  for (const c of DATA.summary.categories){
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "cat-btn" + (c.name === state.currentCategory ? " active" : "");
+    btn.innerHTML = `<span>${escapeHtml(c.name)}</span><span class="cnt">${c.count}</span>`;
+    btn.addEventListener("click", () => {
+      state.currentCategory = c.name;
+      state.currentIndex = 0;
+      saveState(); renderCategoryList(); render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+    li.appendChild(btn); ul.appendChild(li);
+  }
+}
+
+function renderSearch(term){
+  const ul = $("#cat-list"); ul.innerHTML = "";
+  const matches = DATA.questions.filter(q =>
+    q.question.toLowerCase().includes(term) ||
+    String(q.qnum).includes(term) ||
+    q.category.toLowerCase().includes(term)
+  ).slice(0, 40);
+  if (matches.length === 0){
+    ul.innerHTML = '<li style="padding:14px 8px;font-family:JetBrains Mono;font-size:11px;color:var(--ink-mute);letter-spacing:0.08em">No matches.</li>';
+    return;
+  }
+  for (const q of matches){
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "cat-btn";
+    const snippet = q.question.slice(0, 64).replace(/\n/g,' ') + '…';
+    btn.innerHTML = `<span style="font-size:12px;line-height:1.35"><b style="font-family:JetBrains Mono;font-weight:600;color:var(--accent-2);margin-right:6px">#${q.qnum}</b>${escapeHtml(snippet)}</span>`;
+    btn.addEventListener("click", () => jumpTo(q));
+    li.appendChild(btn); ul.appendChild(li);
+  }
+}
+
+function render(){
+  const cat = state.currentCategory;
+  const list = questionsInCategory(cat);
+  const q = list[state.currentIndex];
+  $("#hd-cat").textContent = cat;
+  $("#hd-q").innerHTML = `Q&nbsp;${q.qnum}&nbsp;<span style="opacity:0.55">/&nbsp;${DATA.summary.total}</span>`;
+  renderQuestion(q, list);
+  renderRail(cat, list);
+}
+
+function isMulti(q){ return (q.communityAnswer || q.correctAnswer || '').length > 1; }
+
+function renderQuestion(q, listInCat){
+  const isMultiQ = isMulti(q);
+  const idxInCat = state.currentIndex + 1;
+  const total = listInCat.length;
+  const recState = state.answered[q.qnum];
+  const isLocked = !!recState;
+
+  const head = document.createElement("div");
+  head.className = "column-head";
+  const catName = escapeHtml(state.currentCategory);
+  const titleHtml = catName.replace(/(\w[\w&;]*)$/, '<em>$1</em>');
+  head.innerHTML = `
+    <h1 class="section-title">${titleHtml}</h1>
+    <div class="section-meta">${listInCat.length} questions in section<br>showing ${idxInCat} / ${total}</div>
+  `;
+
+  const qHead = `
+    <div class="qhead">
+      <div class="lhs">
+        <span class="qnum">№ ${q.qnum}</span>
+        <span class="qmeta">${isMultiQ ? `Select ${q.communityAnswer.length}` : 'Select one'}<br>${Object.keys(q.options).length} options</span>
+      </div>
+      <div class="rhs">
+        ${isLocked
+          ? `<span class="status-dot ${recState.correct ? 'good' : 'bad'}"></span>${recState.correct ? 'Answered · correct' : 'Answered · diverged'}`
+          : `<span class="status-dot"></span>Open question`}
+      </div>
+    </div>
+  `;
+
+  const qText = `<div class="qtext">${paragraphizeQuestion(q.question).map(p => `<p>${escapeHtml(fixLigatures(p))}</p>`).join('')}</div>`;
+
+  // Choices
+  function pctFor(L){
+    let p = 0;
+    for (const [combo, v] of Object.entries(q.communityVotes)){
+      if (combo.includes(L) && v > p) p = v;
+    }
+    return p;
+  }
+  const letters = Object.keys(q.options);
+  const userPicked = recState ? recState.picked.split('') : [];
+  const communityLetters = (q.communityAnswer || '').split('');
+
+  let choicesHtml = '<ul class="choices" id="choices">';
+  for (const L of letters){
+    const text = fixLigatures(q.options[L]);
+    const pct = pctFor(L);
+    const sel = userPicked.includes(L);
+    let cls = "choice" + (isMultiQ ? " multi" : "");
+    if (sel && !isLocked) cls += " selected";
+    if (isLocked){
+      if (communityLetters.includes(L)) cls += " community";
+      else if (userPicked.includes(L)) cls += " user-wrong";
+    }
+    const badges = [];
+    if (isLocked){
+      if (communityLetters.includes(L) && userPicked.includes(L)) {
+        badges.push('<span class="badge badge-community">community</span>');
+        badges.push('<span class="badge badge-yours">your pick</span>');
+      } else if (communityLetters.includes(L)){
+        badges.push('<span class="badge badge-community">community</span>');
+      } else if (userPicked.includes(L)){
+        badges.push('<span class="badge badge-wrong">your pick</span>');
+      }
+    }
+    choicesHtml += `
+      <li class="${cls}" data-letter="${L}">
+        <span class="key">${L}</span>
+        <div class="body">${escapeHtml(text)}${badges.join('')}
+          ${isLocked && pct > 0 ? `<div class="vote-bar"><div class="fill" data-w="${pct}"></div></div>` : ''}
+        </div>
+        <span class="pct">${pct > 0 ? pct + '%' : (isLocked ? '0%' : '')}</span>
+      </li>`;
+  }
+  choicesHtml += '</ul>';
+
+  // Verdict
+  const verdictHtml = isLocked ? `
+    <div class="verdict ${recState.correct ? 'correct' : 'wrong'}">
+      <div class="sigil">${recState.correct ? '✓' : '✕'}</div>
+      <div>
+        <h3>${recState.correct ? 'You match the <em>community</em>.' : 'You <em>diverge</em> from the community.'}</h3>
+        <p>YOU CHOSE&nbsp;<b>${userPicked.join('') || '—'}</b> · COMMUNITY <b>${communityLetters.join('')}</b> (${Math.max(...Object.values(q.communityVotes))}%) · OFFICIAL KEY <b>${q.correctAnswer}</b></p>
+      </div>
+    </div>
+  ` : '';
+
+  // Actions
+  const actionsHtml = `
+    <div class="actions">
+      ${isLocked
+        ? `<button class="btn btn-ghost" id="btn-clear">Undo answer</button>
+           <span class="spacer"></span>
+           <button class="btn" id="btn-next">Next question →</button>`
+        : `<button class="btn" id="btn-submit" disabled>Submit answer</button>
+           <button class="btn btn-ghost" id="btn-reveal">Reveal without answering</button>`}
+    </div>
+  `;
+
+  // Discussion
+  let discussionHtml = '';
+  if (isLocked && q.comments && q.comments.length){
+    discussionHtml = `<div class="discussion-anchor"><span class="label">Community discussion</span><span class="ct">${q.comments.length} entries</span></div><ul class="comments">`;
+    for (const c of q.comments){
+      const d = Math.min(3, c.depth || 0);
+      const selBadge = c.selected
+        ? `<span class="sel ${communityLetters.includes(c.selected[0]) ? 'match' : 'diff'}">Selected: ${c.selected}</span>`
+        : '';
+      const badge = c.badge ? `<span class="badge">${escapeHtml(c.badge)}</span>` : '';
+      const up = c.upvotes ? `<span class="up">▲ <b>${c.upvotes}</b></span>` : '';
+      discussionHtml += `
+        <li class="cmt depth-${d}">
+          <div class="head">
+            <span class="user">${escapeHtml(c.user)}</span>
+            ${badge}
+            <span class="when">${escapeHtml(c.when)}</span>
+            ${selBadge}
+          </div>
+          <div class="text">${linkify(escapeHtml(fixLigatures(c.text)))}</div>
+          ${up}
+        </li>`;
+    }
+    discussionHtml += '</ul>';
+  } else if (isLocked){
+    discussionHtml = `<div class="discussion-anchor"><span class="label">No community discussion</span></div>`;
+  }
+
+  // Pager
+  const prevIdx = state.currentIndex - 1;
+  const nextIdx = state.currentIndex + 1;
+  const pagerHtml = `
+    <div class="pager">
+      <a class="${prevIdx < 0 ? 'disabled' : ''}" id="pg-prev">← Previous</a>
+      <span class="ctr">In <b>${escapeHtml(state.currentCategory)}</b> · <b>${idxInCat}</b> / <b>${total}</b></span>
+      <a class="${nextIdx >= total ? 'disabled' : ''}" id="pg-next">Next →</a>
+    </div>
+  `;
+
+  const showHero = q.qnum === DATA.questions[0].qnum && !isLocked && Object.keys(state.answered).length === 0;
+  const heroHtml = showHero ? `
+    <div class="hero">
+      <h2>Begin the <em>practice exam.</em></h2>
+      <p>Each question is graded against the <b>community vote distribution</b> — not the printed answer key. Pick what you believe, submit, then see how the wider examinee pool ruled and read their reasoning.</p>
+      <ul>
+        <li><b>Rounded key</b> = single answer. <b>Square key</b> = multi-select; the meta tells you how many to pick.</li>
+        <li>After submit: <b>green</b> = community pick · <b>red</b> = your divergent pick. The percentages and the full threaded discussion appear.</li>
+        <li>Use the index on the left to switch sections. <b>Progress persists on this device</b> via localStorage.</li>
+      </ul>
+    </div>
+  ` : '';
+
+  const container = document.createElement("div");
+  container.className = "qcard" + (isLocked ? " locked" : "");
+  container.innerHTML = qHead + qText + choicesHtml + verdictHtml + actionsHtml + discussionHtml + pagerHtml;
+
+  const content = $("#content");
+  content.innerHTML = '';
+  content.appendChild(head);
+  if (heroHtml){ const div = document.createElement('div'); div.innerHTML = heroHtml; content.appendChild(div.firstElementChild); }
+  content.appendChild(container);
+
+  attachQuestionHandlers(q, isMultiQ, isLocked);
+
+  requestAnimationFrame(() => {
+    $$('.vote-bar .fill', container).forEach(f => { f.style.width = (parseInt(f.dataset.w,10)||0) + '%'; });
+  });
+}
+
+function attachQuestionHandlers(q, isMultiQ, isLocked){
+  // Pager is wired in BOTH states.
+  const pp = $("#pg-prev"); if (pp) pp.addEventListener("click", e => { e.preventDefault(); prev(); });
+  const pn = $("#pg-next"); if (pn) pn.addEventListener("click", e => { e.preventDefault(); next(); });
+  const choices = $("#choices");
+  if (isLocked) return wirePostLock(q);
+  let picked = new Set();
+  const needed = (q.communityAnswer || q.correctAnswer || '').length || 1;
+  function updateSubmit(){
+    const btn = $("#btn-submit"); if (!btn) return;
+    btn.disabled = picked.size === 0 || (isMultiQ && picked.size !== needed);
+    btn.textContent = isMultiQ
+      ? (picked.size < needed ? `Select ${needed - picked.size} more` : 'Submit answer')
+      : 'Submit answer';
+  }
+  choices.addEventListener("click", e => {
+    const li = e.target.closest('.choice'); if (!li) return;
+    const L = li.dataset.letter;
+    if (isMultiQ){
+      if (picked.has(L)) picked.delete(L);
+      else if (picked.size < needed) picked.add(L);
+      else { picked.delete([...picked][0]); picked.add(L); }
+    } else {
+      picked.clear(); picked.add(L);
+    }
+    $$('.choice', choices).forEach(c => c.classList.toggle('selected', picked.has(c.dataset.letter)));
+    updateSubmit();
+  });
+  $("#btn-submit").addEventListener("click", () => {
+    if (picked.size === 0) return;
+    submitAnswer(q, [...picked].sort().join(''));
+  });
+  $("#btn-reveal").addEventListener("click", async () => {
+    const ok = await dlg.open({
+      eyebrow:"Reveal answer",
+      title:"Reveal without <em>answering?</em>",
+      body:"This will mark the question as unanswered (it won't count toward your score) but unlock the community pick and discussion.",
+      okLabel:"Reveal", cancelLabel:"Cancel",
+    });
+    if (!ok) return;
+    submitAnswer(q, '', true);
+  });
+  updateSubmit();
+}
+
+function wirePostLock(q){
+  const undo = $("#btn-clear");
+  if (undo) undo.addEventListener("click", () => {
+    delete state.answered[q.qnum];
+    state.recent = state.recent.filter(n => n !== q.qnum);
+    saveState(); render();
+  });
+  const nxt = $("#btn-next"); if (nxt) nxt.addEventListener("click", () => next());
+}
+
+function submitAnswer(q, picked, reveal=false){
+  const community = q.communityAnswer || '';
+  state.answered[q.qnum] = { picked, correct: picked && picked === community, reveal: !!reveal };
+  state.recent = state.recent.filter(n => n !== q.qnum);
+  state.recent.unshift(q.qnum);
+  if (state.recent.length > 8) state.recent.pop();
+  saveState(); render();
+  requestAnimationFrame(() => {
+    const v = $('.verdict'); if (v) v.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+}
+
+async function next(){
+  const list = questionsInCategory(state.currentCategory);
+  if (state.currentIndex + 1 < list.length){
+    state.currentIndex++;
+  } else {
+    const cats = DATA.summary.categories;
+    const i = cats.findIndex(c => c.name === state.currentCategory);
+    if (i + 1 < cats.length){
+      state.currentCategory = cats[i+1].name;
+      state.currentIndex = 0;
+      renderCategoryList();
+    } else {
+      await dlg.notify({
+        eyebrow:"End of bank",
+        title:"You've reached the <em>end.</em>",
+        body:"That was the last question. Use the index on the left to revisit a section, or try the random / review-wrong shortcuts.",
+      });
+      return;
+    }
+  }
+  saveState(); render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function prev(){
+  if (state.currentIndex > 0){ state.currentIndex--; }
+  else {
+    const cats = DATA.summary.categories;
+    const i = cats.findIndex(c => c.name === state.currentCategory);
+    if (i > 0){
+      state.currentCategory = cats[i-1].name;
+      const pl = questionsInCategory(state.currentCategory);
+      state.currentIndex = pl.length - 1;
+      renderCategoryList();
+    } else return;
+  }
+  saveState(); render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderRail(cat, list){
+  const answered = Object.keys(state.answered).length;
+  const correct = Object.values(state.answered).filter(a => a.correct).length;
+  const wrong = Object.values(state.answered).filter(a => !a.correct && !a.reveal).length;
+  const pct = answered === 0 ? 0 : Math.round(100 * correct / answered);
+
+  $("#rail-ans").textContent = answered;
+  $("#rail-cor").textContent = correct;
+  $("#rail-wrg").textContent = wrong;
+  const ps = $("#rail-pct");
+  if (answered === 0){ ps.classList.add('empty'); ps.innerHTML = '—<sup>%</sup>'; }
+  else { ps.classList.remove('empty'); ps.innerHTML = pct + '<sup>%</sup>'; }
+  $("#hd-score-num").textContent = correct;
+  $("#hd-score-tot").textContent = answered;
+  $("#hd-score-pct").textContent = answered === 0 ? '—' : pct + '%';
+
+  const recentOrder = [...state.recent];
+  let curStreak = 0;
+  for (let i = 0; i < recentOrder.length; i++){
+    const r = state.answered[recentOrder[i]];
+    if (r && r.correct) curStreak++; else break;
+  }
+  $("#rail-streak").textContent = curStreak ? `× ${curStreak}` : '—';
+  const dots = $("#streak-dots"); dots.innerHTML = '';
+  for (const qn of state.recent.slice(0,8)){
+    const r = state.answered[qn];
+    const d = document.createElement('div');
+    d.className = 'dot ' + (r.correct ? 'good' : 'bad');
+    d.title = `Q#${qn}`;
+    dots.appendChild(d);
+  }
+
+  // Section question-map
+  $("#rail-cat-name").textContent = cat;
+  const catAnswered = list.filter(q => state.answered[q.qnum]);
+  const catCorrect = catAnswered.filter(q => state.answered[q.qnum].correct).length;
+  const catWrong = catAnswered.length - catCorrect;
+  const catTodo = list.length - catAnswered.length;
+  $("#cat-meta").textContent = `${catAnswered.length} / ${list.length}`;
+  $("#cat-cor").textContent = catCorrect;
+  $("#cat-wrg").textContent = catWrong;
+  $("#cat-todo").textContent = catTodo;
+
+  const qmap = $("#qmap"); qmap.innerHTML = '';
+  list.forEach((qq, idx) => {
+    const rec = state.answered[qq.qnum];
+    let cls = "cell";
+    if (rec){ cls += rec.correct ? " good" : " bad"; }
+    if (idx === state.currentIndex) cls += " now";
+    const cell = document.createElement("button");
+    cell.className = cls;
+    cell.type = "button";
+    cell.textContent = idx + 1;
+    const statusLabel = rec ? (rec.correct ? "✓ correct" : "✕ wrong") : "not started";
+    cell.title = `#${qq.qnum} · ${statusLabel}${idx === state.currentIndex ? " · current" : ""}`;
+    cell.addEventListener("click", () => {
+      state.currentIndex = idx;
+      saveState(); render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+    qmap.appendChild(cell);
+  });
+}
+
+function escapeHtml(s){ if (s == null) return ''; return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function linkify(s){ return s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
+
+// Repair "fi"/"fl" ligatures that the PDF extractor dropped (so "AWS Con g" becomes
+// "AWS Config", "noti cation" becomes "notification", etc.) and fix the stray space
+// the extractor introduced around right-single-quote contractions ("unit' s" → "unit's").
+const LIGATURE_FIXES = [
+  // fi-family
+  ['Con guration','Configuration'], ['con guration','configuration'],
+  ['Con gurations','Configurations'], ['con gurations','configurations'],
+  ['Con gure','Configure'], ['con gure','configure'],
+  ['Con gures','Configures'], ['con gures','configures'],
+  ['Con gured','Configured'], ['con gured','configured'],
+  ['Con g','Config'], ['con g','config'],
+  ['Noti cation','Notification'], ['noti cation','notification'],
+  ['Noti cations','Notifications'], ['noti cations','notifications'],
+  ['Noti es','Notifies'], ['noti es','notifies'],
+  ['Noti ed','Notified'], ['noti ed','notified'],
+  ['Noti er','Notifier'], ['noti er','notifier'],
+  ['Noti y','Notify'], ['noti y','notify'],
+  ['Speci cation','Specification'], ['speci cation','specification'],
+  ['Speci cations','Specifications'], ['speci cations','specifications'],
+  ['Speci c','Specific'], ['speci c','specific'],
+  ['Speci cs','Specifics'], ['speci cs','specifics'],
+  ['Speci es','Specifies'], ['speci es','specifies'],
+  ['Speci ed','Specified'], ['speci ed','specified'],
+  ['Veri cation','Verification'], ['veri cation','verification'],
+  ['Veri es','Verifies'], ['veri es','verifies'],
+  ['Veri ed','Verified'], ['veri ed','verified'],
+  ['Veri er','Verifier'], ['veri er','verifier'],
+  ['Veri y','Verify'], ['veri y','verify'],
+  ['Modi cation','Modification'], ['modi cation','modification'],
+  ['Modi cations','Modifications'], ['modi cations','modifications'],
+  ['Modi es','Modifies'], ['modi es','modifies'],
+  ['Modi ed','Modified'], ['modi ed','modified'],
+  ['Modi y','Modify'], ['modi y','modify'],
+  ['Identi cation','Identification'], ['identi cation','identification'],
+  ['Identi cations','Identifications'], ['identi cations','identifications'],
+  ['Identi es','Identifies'], ['identi es','identifies'],
+  ['Identi ed','Identified'], ['identi ed','identified'],
+  ['Identi er','Identifier'], ['identi er','identifier'],
+  ['Identi ers','Identifiers'], ['identi ers','identifiers'],
+  ['Quali ed','Qualified'], ['quali ed','qualified'],
+  ['Quali er','Qualifier'], ['quali er','qualifier'],
+  ['Quali cation','Qualification'], ['quali cation','qualification'],
+  ['Quanti es','Quantifies'], ['quanti es','quantifies'],
+  ['De nition','Definition'], ['de nition','definition'],
+  ['De nitions','Definitions'], ['de nitions','definitions'],
+  ['De ne','Define'], ['de ne','define'],
+  ['De nes','Defines'], ['de nes','defines'],
+  ['De ned','Defined'], ['de ned','defined'],
+  ['Bene t','Benefit'], ['bene t','benefit'],
+  ['Bene ts','Benefits'], ['bene ts','benefits'],
+  ['Bene cial','Beneficial'], ['bene cial','beneficial'],
+  ['Pro le','Profile'], ['pro le','profile'],
+  ['Pro les','Profiles'], ['pro les','profiles'],
+  ['Of ce','Office'], ['of ce','office'],
+  ['Of cial','Official'], ['of cial','official'],
+  ['Of cials','Officials'], ['of cials','officials'],
+  ['Ef cient','Efficient'], ['ef cient','efficient'],
+  ['Ef ciency','Efficiency'], ['ef ciency','efficiency'],
+  ['Suf cient','Sufficient'], ['suf cient','sufficient'],
+  ['Traf c','Traffic'], ['traf c','traffic'],
+  ['Pro t','Profit'], ['pro t','profit'],
+  ['Justi cation','Justification'], ['justi cation','justification'],
+  ['Magni cation','Magnification'], ['magni cation','magnification'],
+  ['Magni er','Magnifier'], ['magni er','magnifier'],
+  // fl-family (much rarer in this dataset, but include common ones)
+  ['re ect','reflect'], ['Re ect','Reflect'],
+  ['re ects','reflects'], ['Re ects','Reflects'],
+  ['re ected','reflected'], ['Re ected','Reflected'],
+  ['in uence','influence'], ['In uence','Influence'],
+  ['over ow','overflow'], ['Over ow','Overflow'],
+  ['work ow','workflow'], ['Work ow','Workflow'],
+  // Surrounded-by-space patterns (use sparingly)
+  [' rst ', ' first '], [' rst.', ' first.'], [' rst,', ' first,'], [' rstly', ' firstly'],
+  [' ll ', ' fill '], [' lled ', ' filled '], [' lling ', ' filling '],
+  [' lter', ' filter'],
+  [' eld ', ' field '], [' elds ', ' fields '],
+  [' nal ', ' final '],
+  // Contraction spacing artifacts
+  ["' s", "'s"], ["' t", "'t"], ["' re", "'re"], ["' ve", "'ve"],
+  ["' ll", "'ll"], ["' m", "'m"], ["' d", "'d"],
+];
+function fixLigatures(s){
+  if (!s) return s;
+  for (const [k, v] of LIGATURE_FIXES) s = s.split(k).join(v);
+  return s;
+}
+
+// Reconstruct paragraphs from the PDF-extracted text. A hard line break in the source
+// is treated as a wrap artifact (join with space) UNLESS the previous line ends with
+// a sentence terminator (. ? ! :), in which case it starts a new paragraph.
+function paragraphizeQuestion(text){
+  const lines = (text || '').split('\n');
+  const out = [];
+  let buf = '';
+  const flush = () => { if (buf) { out.push(buf); buf = ''; } };
+  for (const raw of lines){
+    const line = raw.trim();
+    if (!line){ flush(); continue; }
+    if (!buf){ buf = line; continue; }
+    const prevEnd = buf.slice(-1);
+    if (/[.?!:]/.test(prevEnd)){ flush(); buf = line; }
+    else { buf += ' ' + line; }
+  }
+  flush();
+  return out.length ? out : [''];
+}
+
+init();
+</script>
+</body>
+</html>

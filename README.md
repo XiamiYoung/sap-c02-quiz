@@ -1,5 +1,7 @@
 # SAP-C02 Quiz
 
+> AWS Certified Solutions Architect - Professional (SAP-C02)
+
 **Live demo:** https://xiamiyoung.github.io/sap-c02-quiz/
 
 A single-file, offline-friendly quiz app for the **AWS Certified Solutions Architect – Professional (SAP-C02)** exam. Questions are **organized by topic category** (not dumped as one long random list) so you can drill the areas you're weakest in. Just open `index.html` in any modern browser — no build step, no server, no dependencies.

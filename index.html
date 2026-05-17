@@ -784,6 +784,56 @@ aside.discussion-rail{
   color:var(--ink-mute);
 }
 
+/* —————— Mobile drawer (categories + question map) —————— */
+.mobile-only{display:none}
+.mobile-backdrop{
+  position:fixed;inset:0;background:rgba(15,14,12,0.45);
+  z-index:110;display:none;
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  animation:fadeIn 0.18s ease;
+}
+.mobile-backdrop.open{display:block}
+.drawer-close{display:none}
+@media (max-width:840px){
+  .mobile-only{display:flex}
+  aside.toc, aside.discussion-rail{
+    display:block;
+    position:fixed;top:0;height:100dvh;height:100vh;
+    width:min(86vw, 340px);
+    background:var(--bg);
+    z-index:120;
+    padding:56px 18px 80px;
+    margin:0;
+    overflow-y:auto;
+    box-shadow:0 24px 60px -12px rgba(15,14,12,0.4);
+    transition:transform 0.24s ease;
+    border:0;
+  }
+  aside.toc{
+    left:0;
+    border-right:1px solid var(--line-strong);
+    transform:translateX(-100%);
+  }
+  aside.discussion-rail{
+    right:0;
+    border-left:1px solid var(--line-strong);
+    transform:translateX(100%);
+  }
+  aside.toc.mobile-open,
+  aside.discussion-rail.mobile-open{transform:translateX(0)}
+  .drawer-close{
+    display:flex;
+    position:absolute;top:14px;right:14px;
+    width:32px;height:32px;
+    border:1px solid var(--line-strong);background:transparent;
+    border-radius:8px;cursor:pointer;
+    align-items:center;justify-content:center;
+    font-size:18px;line-height:1;color:var(--ink);
+    z-index:1;
+  }
+  .drawer-close:hover{background:var(--bg-2);border-color:var(--ink)}
+}
+
 /* —————— Dialog —————— */
 .dialog-overlay{
   position:fixed;inset:0;
@@ -825,6 +875,12 @@ aside.discussion-rail{
 @keyframes popIn{from{transform:scale(0.96) translateY(8px);opacity:0}to{transform:none;opacity:1}}
 
 /* small responsive tweaks */
+@media (max-width:840px){
+  header.masthead{padding:12px 18px;gap:10px}
+  .head-mid{display:none}
+  .score-pill{font-size:10px;padding:6px 10px 5px;gap:6px}
+  .score-pill span:first-child{display:none}
+}
 @media (max-width:680px){
   section.column{padding:30px 22px 60px}
   .section-title{font-size:26px}
@@ -832,9 +888,8 @@ aside.discussion-rail{
   .qtext{font-size:15.5px}
   .choice{grid-template-columns:30px 1fr;padding:12px 12px}
   .choice .pct{grid-column:1/-1;justify-self:end}
-  header.masthead{grid-template-columns:1fr auto;gap:8px;padding:12px 16px}
-  .head-mid{display:none}
-  .brand{font-size:22px}
+  header.masthead{grid-template-columns:auto 1fr auto;gap:8px;padding:12px 14px}
+  .brand{font-size:13px;letter-spacing:0.12em}
   .brand b{display:none}
 }
 </style>
@@ -850,6 +905,7 @@ aside.discussion-rail{
     <span class="pill" id="hd-q">—</span>
   </div>
   <div class="head-right">
+    <button class="icon-btn mobile-only" id="btn-mobile-toc" title="Sections" aria-label="Open sections drawer">☰</button>
     <div class="score-pill">
       <span>SCORE</span>
       <b id="hd-score-num">0</b>
@@ -858,6 +914,7 @@ aside.discussion-rail{
       <span class="sep">·</span>
       <b id="hd-score-pct">—</b>
     </div>
+    <button class="icon-btn mobile-only" id="btn-mobile-map" title="Question map" aria-label="Open question map drawer">⊞</button>
     <button class="icon-btn" id="btn-reset" title="Reset progress for this device">⟲</button>
   </div>
 </header>
@@ -865,6 +922,7 @@ aside.discussion-rail{
 <main>
 
 <aside class="toc">
+  <button type="button" class="drawer-close" data-drawer-close aria-label="Close drawer">✕</button>
   <div class="toc-title">Sections <b id="toc-count">13</b></div>
   <input class="search-box" id="search" placeholder="Search questions, e.g. CloudFront…">
   <ul class="cat-list" id="cat-list"></ul>
@@ -882,6 +940,7 @@ aside.discussion-rail{
 </section>
 
 <aside class="discussion-rail">
+  <button type="button" class="drawer-close" data-drawer-close aria-label="Close drawer">✕</button>
   <div class="rail-section">
     <p class="rail-h">Session score</p>
     <div class="big-stat empty" id="rail-pct">—<sup>%</sup></div>
@@ -913,6 +972,8 @@ aside.discussion-rail{
 </aside>
 
 </main>
+
+<div class="mobile-backdrop" id="mobile-backdrop"></div>
 
 <!-- Dialog -->
 <div class="dialog-overlay" id="dlg">
@@ -1027,6 +1088,33 @@ function init(){
     if (!term) { renderCategoryList(); return; }
     renderSearch(term);
   });
+
+  // Mobile drawers
+  const toc = $("aside.toc");
+  const rail = $("aside.discussion-rail");
+  const backdrop = $("#mobile-backdrop");
+  function closeDrawers(){
+    toc.classList.remove("mobile-open");
+    rail.classList.remove("mobile-open");
+    backdrop.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  function openDrawer(panel){
+    closeDrawers();
+    panel.classList.add("mobile-open");
+    backdrop.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  $("#btn-mobile-toc").addEventListener("click", () => openDrawer(toc));
+  $("#btn-mobile-map").addEventListener("click", () => openDrawer(rail));
+  backdrop.addEventListener("click", closeDrawers);
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && (toc.classList.contains("mobile-open") || rail.classList.contains("mobile-open"))) closeDrawers();
+  });
+  $$("[data-drawer-close]").forEach(b => b.addEventListener("click", closeDrawers));
+  // Auto-close drawers when navigating from inside them
+  toc.addEventListener("click", e => { if (e.target.closest(".cat-btn, #link-random, #link-incorrect")) closeDrawers(); });
+  rail.addEventListener("click", e => { if (e.target.closest(".qmap .cell")) closeDrawers(); });
 }
 
 function jumpTo(q){
